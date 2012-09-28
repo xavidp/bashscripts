@@ -46,8 +46,8 @@ RLOGF=log-$MLABEL-SUM.$NOWD.txt
 RLOGF1=log-$MLABEL-$RBAK1.$NOWD.txt
 RLOGF2=log-$MLABEL-$RBAK2.$NOWD.txt
 RLOGF3=log-$MLABEL-$RBAK3.$NOWD.txt
-# Base log path
-BLOGF=$BAKPATH/$BAK
+# Base log path (set by default to the same base path for backups)
+BLOGF=$BBAK
 # Absolute path for log files
 ALOGF=$BLOGF/$RLOGF
 ALOGF1=$BLOGF/$RLOGF1
@@ -55,11 +55,15 @@ ALOGF2=$BLOGF/$RLOGF2
 ALOGF3=$BLOGF/$RLOGF3
 
 
-### This part removes the previous files in these folders if they exist, and create dirs as needed for new set of periodic backups ###
-## To avoid removing previous backups locally, keep the last part commeted out (with ## just in front of "|| /bin/rm -f ..." )
-[ ! -d $ABAK1 ] && mkdir -p $ABAK1 ## || /bin/rm -f $ABAK1/*
-[ ! -d $ABAK2 ] && mkdir -p $ABAK2 ## || /bin/rm -f $ABAK2/*
-[ ! -d $ABAK3 ] && mkdir -p $ABAK3 ## || /bin/rm -f $ABAK3/*
+### These next parts (1) & (2) are related to the removal of previous files in these folders if they exist, and create dirs as needed for new set of periodic backups ###
+
+## (1) To remove all previous backups locally at the server and at the same base backup folder, uncomment the following line
+#[ ! -d $BAKPATH/$BAK ] && mkdir -p $BAKPATH/$BAK || /bin/rm -f $BAKPATH/$BAK/*
+
+## (2) To avoid removing previous backups from teh same day locally, keep the last part commeted out (with ## just in front of "|| /bin/rm -f ..." )
+[ ! -d $ABAK1 ] && mkdir -p $ABAK1 || /bin/rm -f $ABAK1/*
+[ ! -d $ABAK2 ] && mkdir -p $ABAK2 || /bin/rm -f $ABAK2/*
+[ ! -d $ABAK3 ] && mkdir -p $ABAK3 || /bin/rm -f $ABAK3/*
 ### [ ! -d "$BAK" ] && mkdir -p "$BAK" ###
  
 DBS="$($MYSQL -u $MUSER -h $MHOST -p$MPASS -Bse 'show databases')"
@@ -77,7 +81,7 @@ tar -czvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* >  $ALOGF3
 
 ### Send files over ftp ###
 #lftp -u $FTPU,$FTPP -e "mkdir $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
-cd $ABAK1;ls -lh * >> $ALOGF1
+cd $ABAK1;ls -lh * > $ALOGF1
 # Add a short summary with partial dir sizes and append all partial log files into one ($LOGF)
 cd $BBAK;du -h $RBAK1 $RBAK2 $RBAK3 > $ALOGF;echo "" >> $ALOGF;echo "--- $RBAK2 uncompressed: ---------------" >> $ALOGF;du $TIKIFILESABSPATH -h --max-depth=2 >> $ALOGF
 
