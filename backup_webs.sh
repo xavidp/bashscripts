@@ -74,10 +74,10 @@ do
 done
  
 ### Backup tikifiles ###
-tar -czvf $ABAK2/00-$RBAK2-$MLABEL.$NOWD-$NOWT.tgz $TIKIFILESABSPATH/* >  $ALOGF2
+tar -chzvf $ABAK2/00-$RBAK2-$MLABEL.$NOWD-$NOWT.tgz $TIKIFILESABSPATH/* >  $ALOGF2
 
 ### Backup serverfiles ###
-tar -czvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* >  $ALOGF3
+tar -chzvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /root/.* >  $ALOGF3
 
 ### Send files over ftp ###
 #lftp -u $FTPU,$FTPP -e "mkdir $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
@@ -87,11 +87,11 @@ cd $BBAK;du -h $RBAK1 $RBAK2 $RBAK3 > $ALOGF;echo "" >> $ALOGF;echo "--- $RBAK2 
 
 ### Compress and Send log files ###
 tar -czvf $ALOGF1.tgz -C $BLOGF $RLOGF1
-tar -czvf $ALOGF2.tgz -C $BLOGF $RLOGF2
+#tar -czvf $ALOGF2.tgz -C $BLOGF $RLOGF2
 tar -czvf $ALOGF3.tgz -C $BLOGF $RLOGF3
 #lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; quit" $FTPS
 
 ### Send report through email ###
-sendemail -f $EMAILF -t $EMAILT -u '[B52 webs Backups Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP
+sendemail -f $EMAILF -t $EMAILT -u '[B52 webs Backups Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
 
 

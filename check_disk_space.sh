@@ -1,8 +1,10 @@
 #/bin/bash
-ADMIN="ueb@ir.vhebron.net"
-# set alert-level 92 % standard
-ALERT=92
-df -H | grep -vE '^Filesystem|tmpfs|cdrom|MainHead' | awk '{ print $5 " " $6 }' | while read output;
+#ADMIN="ueb@ir.vhebron.net"
+#ADMIN="xavier.depedro@vhir.org,ueb@vhir.org"
+ADMIN="xavier.depedro@vhir.org"
+# set alert-level on a given %
+ALERT=75
+df -H | grep -vE '^Filesystem|tmpfs|cdrom|MainHead|magatzem' | awk '{ print $5 " " $6 }' | while read output;
 do
   usep=$(echo $output | awk '{ print $1}' | cut -d'%' -f1  )
   partition=$(echo $output | awk '{ print $2 }' )
