@@ -3,8 +3,8 @@
 #ADMIN="xavier.depedro@vhir.org,ueb@vhir.org"
 ADMIN="xavier.depedro@vhir.org"
 # set alert-level on a given %
-ALERT=75
-df -H | grep -vE '^Filesystem|tmpfs|cdrom|MainHead|magatzem' | awk '{ print $5 " " $6 }' | while read output;
+ALERT=82
+df -H 2> /dev/null | grep -vE '^Filesystem|tmpfs|cdrom|MainHead|magatzem|S\.\ fitxers' | awk '{ print $5 " " $6 }' | while read output;
 do
   usep=$(echo $output | awk '{ print $1}' | cut -d'%' -f1  )
   partition=$(echo $output | awk '{ print $2 }' )
