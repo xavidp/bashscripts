@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Icon=/home/foo.bar/igv.ico
+Icon=/home/foo.bar/.b52/igv.ico
 Comment=IGV Software
 Terminal=false
 Categories=Applications;IGV

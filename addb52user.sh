@@ -51,6 +51,7 @@ cd /home/ueb/scripts/templates4systemusers;cp --parents .config/pcmanfm/LXDE/*.c
 echo "* Desktop background changed..."
 sed -i -e "s/foo.bar/$newuser/g" /home/$newuser/Desktop/*.desktop
 sed -i -e "s/foo.bar/$newuser/g" /home/$newuser/.b52/*.svg
+sed -i -e "s/foo.bar/$newuser/g" /home/$newuser/.config/pcmanfm/LXDE/*.conf
 echo "* Fixed paths and name for "$newuser" in desktop icons and background..."
 cd /home/$newuser/;chown $newuser:$newuser Desktop Desktop/* -R;cd ~
 cd /home/$newuser/;chown $newuser:$newuser .config .config/* -R;cd ~
