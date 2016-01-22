@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Exec=/usr/lib/jvm/java-8-oracle/jre/bin/javaws %u /opt/IPA/IpaApplication.jnlp
+Icon=credentials-preferences
+Terminal=false
+Name=IPA
+Type=Application
+Path=/home/foo.bar
+GenericName=IPA app
+Comment[en_US]=Oberta via jnlp Java Web Start

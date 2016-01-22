@@ -1,0 +1,6 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=CLC Genomics Workbench 8
+Exec=/bin/sh "/opt/CLCGenomicsWorkbench8/clcgenomicswb8" 
+Icon=/opt/CLCGenomicsWorkbench8/.install4j/clcgenomicswb8.png

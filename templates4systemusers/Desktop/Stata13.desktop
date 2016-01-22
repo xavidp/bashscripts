@@ -1,0 +1,7 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=Stata 13
+Exec=/opt/stata13/xstata
+Icon=/opt/stata13/stata13.png
+Categories=Others;

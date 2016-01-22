@@ -19,7 +19,8 @@ NOWT=$(date +"%H_%M_%S")
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
 BAKPATH="/home/ueb" # TODO: make the folliwng paths relative to this one
-BAK="backup_webs_b52"
+#BAK="backup_webs_b52"
+BAK="/backups_disk_02/backup_webs_b52"
 TIKIFILESABSPATH="/var/www/tiki_files"
 # Relative paths to backup folders
 RBAK1="mysql"
