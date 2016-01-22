@@ -1,10 +1,10 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Icon=/home/ueb/.java/deployment/cache/6.0/35/442040a3-1e81535d.ico
+Icon=/home/foo.bar/.java/deployment/cache/6.0/42/79f62d6a-3257b0b0.ico
 Comment=IGV Software
 Terminal=false
 Categories=Applications;IGV
 Name=IGV 2.3
-Exec=/usr/lib/jvm/java-8-oracle/jre/bin/javaws -localfile -J-Djnlp.application.href=http://broadinstitute.org/igv/projects/current/igv_lm.jnlp /home/ueb/.java/deployment/cache/6.0/53/16689f75-17adf86a
+Exec=/usr/lib/jvm/java-8-oracle/jre/bin/javaws -localfile -J-Djnlp.application.href=http://data.broadinstitute.org/igv/projects/current/igv_lm.jnlp /home/foo.bar/.java/deployment/cache/6.0/9/14dc80c9-331344bd
 Encoding=UTF-8
