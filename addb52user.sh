@@ -2,6 +2,9 @@
 # Xavier de Pedro Puente - UEB-VHIR
 # http://ueb.vhir.org
 
+# Check that the script is run as root (or with sudo)
+if [[ $(id -u) -ne 0 ]] ; then echo "Please run as root (run with sudo, for instance)" ; exit 1 ; fi
+
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
@@ -29,6 +32,10 @@ shift $((OPTIND-1))
 [ "$1" = "--" ] && shift
 
 newuser="$@"
+
+# Check that there was a username provided as an argument in the command run
+if [[ $newuser == "" ]] ; then echo "You need to specify the username you want to create. Read the help info with 'sudo addb52user.sh -h'" ; exit 1 ; fi
+
 adduser $newuser --force-badname
 echo "* System user created..."
 echo "export LIBGL_ALWAYS_INDIRECT=yes" >> /home/$newuser/.bashrc
