@@ -6,7 +6,7 @@
 MLABEL="ueb_b52"
 ### MySQL Server Login Info ###
 MUSER="ueb"
-MPASS="MainHeadB52"
+MPASS="*******"
 MHOST="localhost"
 ### FTP SERVER Login info ###
 FTPU="ftpuser"
