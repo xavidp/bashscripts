@@ -56,5 +56,7 @@ echo "* Fixed paths and name for "$newuser" in desktop icons and background..."
 cd /home/$newuser/;chown $newuser:$newuser Desktop Desktop/* -R;cd ~
 cd /home/$newuser/;chown $newuser:$newuser .config .config/* -R;cd ~
 echo "* Ownership and permissions of new folders and files fixed..."
+cd /home/$newuser/;chmod 770 $newuser/;cd ~
+echo "* Enforced privacy on user's home folder (new perms: 770)..."
 echo "...We are done! :-)"
 # End of file
