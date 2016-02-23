@@ -85,7 +85,7 @@ done
 tar -czhvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /root/.luckyBackup/* /root/.local/* /root/.ssh/* /root/.config/.*  >  $ALOGF3
 
 ### Backup home user files ###
-tar -czhvf $ABAK4/00-$RBAK4-$MLABEL.$NOWD-$NOWT.tgz /home/xavi/scripts/* /home/xavi/.local/* /home/xavi/.config/* /home/xavi/.Skype/* /home/xavi/.luckyBackup/* /home/xavi/.ssh/* /home/xavi/.purple/* >  $ALOGF4
+tar -czhvf $ABAK4/00-$RBAK4-$MLABEL.$NOWD-$NOWT.tgz /home/xavi/scripts/* /home/xavi/.local/* /home/xavi/.config/* /home/xavi/.Skype/* /home/xavi/.luckyBackup/* /home/xavi/.ssh/* /home/xavi/.purple/* /home/xavi/.kde/* >  $ALOGF4
 
 ### Send files over ftp ###
 #lftp -u $FTPU,$FTPP -e "mkdir $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
