@@ -38,6 +38,7 @@ if [[ $newuser == "" ]] ; then echo "You need to specify the username you want t
 
 adduser $newuser --force-badname
 echo "* System user created..."
+newuserid=$(tail -1 /etc/passwd | gawk -F ':' '{print $3}')
 echo "export LIBGL_ALWAYS_INDIRECT=yes" >> /home/$newuser/.bashrc
 #echo "export PATH=$PATH:/usr/local/stata" >> /home/$newuser/.bashrc
 echo "* His/her .bashrc tweaked..."
@@ -58,5 +59,8 @@ cd /home/$newuser/;chown $newuser:$newuser .config .config/* -R;cd ~
 echo "* Ownership and permissions of new folders and files fixed..."
 cd /home/;chmod 770 $newuser;cd ~
 echo "* Enforced privacy on user's home folder (new perms: 770)..."
+echo "* uid number of this new user: "$newuserid
+echo "...remember to create this user in other servers or computers sharing the same /home with the command:"
+echo "sudo adduser --uid "$newuserid" "$newuser
 echo "...We are done! :-)"
 # End of file
