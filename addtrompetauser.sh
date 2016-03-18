@@ -61,6 +61,6 @@ cd /home/;chmod 770 $newuser;cd ~
 echo "* Enforced privacy on user's home folder (new perms: 770)..."
 echo "* uid number of this new user: "$newuserid
 echo "...remember to create this user in other servers or computers sharing the same /home with the command:"
-echo "sudo adduser --uid "$newuserid" "$newuser
+echo "sudo adduser --uid "$newuserid" --gid "$newuserid" "$newuser
 echo "...We are done! :-)"
 # End of file
