@@ -19,6 +19,8 @@ FTPS="ftpserver"
 FTPF="./backups/"$pcname
 NOWD=$(date +"%Y-%m-%d")
 NOWT=$(date +"%H_%M_%S")
+### USB BACKUP folder (if used instead of FTP)
+USBBAK="/media/xavi/ntfsbackups/"
 ## Some paths defined
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
@@ -103,6 +105,7 @@ tar -czvf $ALOGF1.tgz -C $BLOGF $RLOGF1
 tar -czvf $ALOGF3.tgz -C $BLOGF $RLOGF3
 tar -czvf $ALOGF4.tgz -C $BLOGF $RLOGF4
 #lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; put $ALOGF4.tgz; quit" $FTPS
+cp $BBAK/* -R $USBBAK/$BAK/$NOWD
 
 ### save report of files sizes
 echo $NOWD"_allSize_"`du . -hs` | xargs touch
