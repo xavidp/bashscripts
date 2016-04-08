@@ -91,7 +91,8 @@ done
 tar -czhvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /usr/local/ispconfig/* /root/.luckyBackup/* /root/.local/* /root/.ssh/* /root/.config/.*  >  $ALOGF3
 
 ### Backup home user files ###
-tar -czhvf $ABAK4/00-$RBAK4-$MLABEL.$NOWD-$NOWT.tgz /home/$username/scripts/* /home/$username/.local/* /home/$username/.config/* /home/$username/.Skype/* /home/$username/.luckyBackup/* /home/$username/.ssh/* /home/$username/.purple/* /home/$username/.kde/*  /home/$username/.thunderbird/* --exclude='.WebIde*' --exclude='.config/variet*' --exclude='.local/share/Trash' --exclude='code/*' >  $ALOGF4
+tar -czhvf $ABAK4/00-$RBAK4-$MLABEL.$NOWD-$NOWT.tgz /home/$username/scripts/* /home/$username/.local/* /home/$username/.config/* /home/$username/.Skype/* /home/$username/.luckyBackup/* /home/$username/.ssh/* /home/$username/.purple/* /home/$username/.kde/*  /home/$username/.thunderbird/* /home/$username/Sync/yourcriticalfolder/*  \
+		--exclude='.WebIde*' --exclude='.config/variet*' --exclude='.local/share/Trash' --exclude='code/*' >  $ALOGF4
 
 ### Send files over ftp ###
 #lftp -u $FTPU,$FTPP -e "mkdir $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
@@ -105,7 +106,7 @@ tar -czvf $ALOGF1.tgz -C $BLOGF $RLOGF1
 tar -czvf $ALOGF3.tgz -C $BLOGF $RLOGF3
 tar -czvf $ALOGF4.tgz -C $BLOGF $RLOGF4
 #lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; put $ALOGF4.tgz; quit" $FTPS
-cp $BBAK/* -R $USBBAK/$BAK/$NOWD
+mkdir -p $USBBAK/$BAK/$NOWD;cp $BBAK/* -R $USBBAK/$BAK/$NOWD
 
 ### save report of files sizes
 echo $NOWD"_allSize_"`du . -hs` | xargs touch
@@ -117,4 +118,4 @@ chmod 600 * -R
 chown $username:$username * -R
 
 ### Send report through email ###
-sendemail -f $EMAILF -t $EMAILT -u '[ $username at $pcname : Custom Backup Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
+sendemail -f $EMAILF -t $EMAILT -u '[ '$username' at '$pcname' : Custom Backup Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
