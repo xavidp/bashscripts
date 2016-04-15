@@ -20,7 +20,7 @@ FTPF="./backups/"$pcname
 NOWD=$(date +"%Y-%m-%d")
 NOWT=$(date +"%H_%M_%S")
 ### USB BACKUP folder (if used instead of FTP)
-USBBAK="/media/xavi/ntfsbackups/"
+USBBAK="/media/xavi/usbbackups"
 ## Some paths defined
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
@@ -100,13 +100,11 @@ cd $ABAK1;ls -lh * > $ALOGF1
 # Add a short summary with partial dir sizes and append all partial log files into one ($LOGF)
 cd $BBAK;du -h $RBAK1 $RBAK2 $RBAK3 $RBAK4 > $ALOGF;echo "" >> $ALOGF;echo "--- $RBAK2 uncompressed: ---------------" >> $ALOGF;du $TIKIFILESABSPATH -h --max-depth=2 >> $ALOGF
 
-### Compress and Send log files ###
+### Compress log files ###
 tar -czvf $ALOGF1.tgz -C $BLOGF $RLOGF1
 #tar -czvf $ALOGF2.tgz -C $BLOGF $RLOGF2
 tar -czvf $ALOGF3.tgz -C $BLOGF $RLOGF3
 tar -czvf $ALOGF4.tgz -C $BLOGF $RLOGF4
-#lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; put $ALOGF4.tgz; quit" $FTPS
-mkdir -p $USBBAK/$BAK/$NOWD;cp $BBAK/* -R $USBBAK/$BAK/$NOWD
 
 ### save report of files sizes
 echo $NOWD"_allSize_"`du . -hs` | xargs touch
@@ -117,5 +115,17 @@ du . -h --max-depth=3 | grep M >> $NOWD"_logBigSizes".txt
 chmod 600 * -R
 chown $username:$username * -R
 
+### Send log files ###
+#lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; put $ALOGF4.tgz; quit" $FTPS
+
+### Clon the local backup at the USB location
+mkdir -p $USBBAK/$BAK/$NOWD;cp $BBAK/* -R $USBBAK/$BAK/$NOWD
+### Changing perms of usbbackup folder for standard user
+chmod 600 $USBBAK/$BAK/$NOWD
+chown $username:$username $USBBAK/$BAK/$NOWD/ $USBBAK/$BAK/$NOWD/* -R
+
 ### Send report through email ###
-sendemail -f $EMAILF -t $EMAILT -u '[ '$username' at '$pcname' : Custom Backup Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
+### See documentation about sendmail at: 
+### https://github.com/mogaal/sendemail
+### Display ALOGF (summary of sizes of the compressed files) in the message body (cat file before the pipe)
+cat $ALOGF | sendemail -f $EMAILF -t $EMAILT -u '['$username' at '$pcname': Custom Backup Report]' -a $ALOGF1 -s $SMTP -o tls=no
