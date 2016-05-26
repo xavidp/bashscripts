@@ -2,33 +2,39 @@
 #######################################
 ### PARAMETERS TO CUSTOMIZE THE SCRIPT
 #######################################
-### Generic Label for the server ###
-MLABEL="xavi_pentinella"
+### Generic Label for the username ###
+username="myuser"
+### Generic Label for the computer ###
+pcname="mypc"
+### Generic Label for the user and computer for mysql ###
+MLABEL=$username"_"$pcname
 ### MySQL Server Login Info ###
-MUSER="ueb"
+MUSER="username"
 MPASS="********"
 MHOST="localhost"
 ### FTP SERVER Login info ###
 FTPU="ftpuser"
 FTPP="ftppass"
 FTPS="ftpserver"
-FTPF="./backups/pentinella"
+FTPF="./backups/"$pcname
 NOWD=$(date +"%Y-%m-%d")
 NOWT=$(date +"%H_%M_%S")
+### USB BACKUP folder (if used instead of FTP)
+USBBAK="/media/xavi/usbbackups"
 ## Some paths defined
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
-BAKPATH="/home/xavi/backups_locals" # TODO: make the folliwng paths relative to this one
-BAK="backup_local_pentinella"
+BAKPATH="/home/"$username"/backups_locals" # TODO: make the folliwng paths relative to this one
+BAK=$pcname
 TIKIFILESABSPATH="/var/www/tiki_files"
 # Relative paths to backup folders
 RBAK1="mysql"
 RBAK2="tikifiles"
 RBAK3="serverfiles"
-RBAK4="homexavifiles"
-EMAILF="ueb@vhir.org"
-EMAILT="xavier.depedro@vhir.org"
-SMTP="servirmta1.ir.vhebron.net"
+RBAK4="home"$username"files"
+EMAILF="username@example.com"
+EMAILT="email@example.com"
+SMTP="smtp.example.com"
 
 #### End of parameters
 #######################################
@@ -81,11 +87,12 @@ done
 ### Backup tikifiles ###
 #tar -czvf $ABAK2/00-$RBAK2-$MLABEL.$NOWD-$NOWT.tgz $TIKIFILESABSPATH/* >  $ALOGF2
 
-### Backup serverfiles ###
-tar -czhvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /root/.luckyBackup/* /root/.local/* /root/.ssh/* /root/.config/.*  >  $ALOGF3
+### Backup systemfiles ###
+tar -czhvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /usr/local/ispconfig/* /root/.luckyBackup/* /root/.local/* /root/.ssh/* /root/.config/.*  >  $ALOGF3
 
 ### Backup home user files ###
-tar -czhvf $ABAK4/00-$RBAK4-$MLABEL.$NOWD-$NOWT.tgz /home/xavi/scripts/* /home/xavi/.local/* /home/xavi/.config/* /home/xavi/.Skype/* /home/xavi/.luckyBackup/* /home/xavi/.ssh/* /home/xavi/.purple/* /home/xavi/.kde/* >  $ALOGF4
+tar -czhvf $ABAK4/00-$RBAK4-$MLABEL.$NOWD-$NOWT.tgz /home/$username/scripts/* /home/$username/.local/* /home/$username/.config/* /home/$username/.Skype/* /home/$username/.luckyBackup/* /home/$username/.ssh/* /home/$username/.purple/* /home/$username/.kde/*  /home/$username/.thunderbird/* /home/$username/Sync/yourcriticalfolder/*  \
+		--exclude='.WebIde*' --exclude='.config/variet*' --exclude='.local/share/Trash' --exclude='code/*' >  $ALOGF4
 
 ### Send files over ftp ###
 #lftp -u $FTPU,$FTPP -e "mkdir $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
@@ -93,14 +100,32 @@ cd $ABAK1;ls -lh * > $ALOGF1
 # Add a short summary with partial dir sizes and append all partial log files into one ($LOGF)
 cd $BBAK;du -h $RBAK1 $RBAK2 $RBAK3 $RBAK4 > $ALOGF;echo "" >> $ALOGF;echo "--- $RBAK2 uncompressed: ---------------" >> $ALOGF;du $TIKIFILESABSPATH -h --max-depth=2 >> $ALOGF
 
-### Compress and Send log files ###
+### Compress log files ###
 tar -czvf $ALOGF1.tgz -C $BLOGF $RLOGF1
 #tar -czvf $ALOGF2.tgz -C $BLOGF $RLOGF2
 tar -czvf $ALOGF3.tgz -C $BLOGF $RLOGF3
 tar -czvf $ALOGF4.tgz -C $BLOGF $RLOGF4
+
+### save report of files sizes
+echo $NOWD"_allSize_"`du . -hs` | xargs touch
+du . -h --max-depth=3 | grep G > $NOWD"_logBigSizes".txt
+du . -h --max-depth=3 | grep M >> $NOWD"_logBigSizes".txt
+
+### Changing perms for standard user
+chmod 600 * -R
+chown $username:$username * -R
+
+### Send log files ###
 #lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; put $ALOGF4.tgz; quit" $FTPS
 
+### Clon the local backup at the USB location
+mkdir -p $USBBAK/$BAK/$NOWD;cp $BBAK/* -R $USBBAK/$BAK/$NOWD
+### Changing perms of usbbackup folder for standard user
+chmod 600 $USBBAK/$BAK/$NOWD
+chown $username:$username $USBBAK/$BAK/$NOWD/ $USBBAK/$BAK/$NOWD/* -R
+
 ### Send report through email ###
-sendemail -f $EMAILF -t $EMAILT -u '[Pentinella Manual Local Backup Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
-
-
+### See documentation about sendmail at: 
+### https://github.com/mogaal/sendemail
+### Display ALOGF (summary of sizes of the compressed files) in the message body (cat file before the pipe)
+cat $ALOGF | sendemail -f $EMAILF -t $EMAILT -u '['$username' at '$pcname': Custom Backup Report]' -a $ALOGF1 -s $SMTP -o tls=no
