@@ -69,7 +69,7 @@ function db_migration {
   echo "Back up the remote databases............................................................."
   echo "Please enter the MySql password for the root user on the remote server $main_server:....."
   read mysqlext
-  ssh $main_server "mkdir /root/mysql; mysqldump -u root -p$mysqlext --all-databases > /root/mysql/fulldump.sql"
+  ssh $main_server "mkdir /root/mysql; mysqldump -u root -p$mysqlext --force --all-databases > /root/mysql/fulldump.sql"
   clear
   echo "Copy the backup.........................................................................."
   rsync $common_args $main_server:/root/mysql/ /root/mysql
