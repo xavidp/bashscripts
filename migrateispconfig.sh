@@ -36,6 +36,7 @@ function menu {
     echo "## Synchronize email                                   (4)##"
     echo "## Synchronize passwords, users and other files        (5)##"
     echo "## Synchronize MailMan                                 (6)##"
+    echo "## Synchronize LetsEncrypt                             (7)##"
     echo "## Exit program                                        (0)##"
     echo "############################################################"
     read -n 1 eingabe
@@ -174,6 +175,17 @@ function mailman_migration {
   echo "############################################################"
   menu
 }
+function le_migration {
+    clear
+  echo "############################################################"
+  echo "############################################################"
+  echo "############ LetsEncrypt migration             #############"
+  echo "############################################################"
+  rsync $common_args --compress $main_server:/etc/letsencrypt /etc
+  echo "############################################################"
+  echo "############################################################"
+  menu
+}
 function beenden {
         clear
         exit
@@ -195,6 +207,8 @@ case $eingabe in
     5) files_migration
     ;;
     6) mailman_migration
+    ;;
+    7) le_migration
     ;;
 esac    
 done
