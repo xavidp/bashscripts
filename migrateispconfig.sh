@@ -79,8 +79,16 @@ function db_migration {
   read mysql2
   mysql -u root -p$mysql2 < /root/mysql/fulldump.sql
   clear
-  echo "Check and repair the databases..........................................................."
-  mysqlcheck -p -A --auto-repair
+  echo "Upgrade mysql system tables if target server has newer mysql/mariadb versions..........................................................."
+  mysql_upgrade -uroot -p --force
+  #
+  # mysql_upgrade also does:
+  ## mysqlcheck --all-databases --check-upgrade --auto-repair
+  ## mysql < fix_priv_tables
+  #
+  # Therefore, no need to run again mysqlcheck with autorepair below
+  ##echo "Check and repair the databases..........................................................."
+  ##mysqlcheck -p -A --auto-repair
   echo "###############################################################"
   echo "###############################################################"
   menu
