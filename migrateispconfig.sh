@@ -162,6 +162,8 @@ function files_migration {
   rsync $common_args $main_server:/var/backup/ /var/backup
   rsync $common_args $main_server:/etc/passwd /root/old-server/
   rsync $common_args $main_server:/etc/group  /root/old-server/
+  rsync $common_args $main_server:/etc/shadow  /root/old-server/
+  rsync $common_args $main_server:/etc/gshadow  /root/old-server/
   rsync $common_args $main_server:/etc/apache2/sites-available/ /etc/apache2/sites-available
   rsync $common_args $main_server:/etc/apache2/sites-enabled/ /etc/apache2/sites-enabled
   echo "############################################################"
