@@ -1,7 +1,8 @@
 # From https://stackoverflow.com/questions/27245182/bash-script-for-deleting-old-backup-files
 # it doesn't properly delete files from this year which doesn't match the days indicated
+# don't use in production yet (untested); it's a work in progress; use at your own risk
 #!/bin/bash
-cd ../tmp/tmp_backups/
+cd ../tmp_backups/
 read YEAR MONTH <<<$(date "+%Y %m")
 LASTYEAR=$(( YEAR-1 ))
 DAYS=" 07 14 21 28 "
