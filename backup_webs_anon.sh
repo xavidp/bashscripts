@@ -3,32 +3,31 @@
 ### PARAMETERS TO CUSTOMIZE THE SCRIPT
 #######################################
 ### Generic Label for the server ###
-MLABEL="ueb_b52"
+MLABEL="myserver"
 ### MySQL Server Login Info ###
-MUSER="ueb"
+MUSER="mysqluser"
 MPASS="*******"
 MHOST="localhost"
 ### FTP SERVER Login info ###
 FTPU="ftpuser"
 FTPP="ftppass"
 FTPS="ftpserver"
-FTPF="./backups/b52"
+FTPF="./backups_user/myserver"
 NOWD=$(date +"%Y-%m-%d")
 NOWT=$(date +"%H_%M_%S")
 ## Some paths defined
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
-BAKPATH="/home/ueb" # TODO: make the folliwng paths relative to this one
-#BAK="backup_webs_b52"
-BAK="/backups_disk_02/backup_webs_b52"
+BAKPATH="/home/myuser" # TODO: make the folliwng paths relative to this one
+BAK="backup_webs_myserver"
 TIKIFILESABSPATH="/var/www/tiki_files"
 # Relative paths to backup folders
 RBAK1="mysql"
 RBAK2="tikifiles"
 RBAK3="serverfiles"
-EMAILF="ueb@vhir.org"
-EMAILT="xavier.depedro@vhir.org"
-SMTP="servirmta1.ir.vhebron.net"
+EMAILF="emailfrom@example.com"
+EMAILT="emailto@example.com"
+SMTP="localhost"
 
 #### End of parameters
 #######################################
@@ -71,28 +70,31 @@ DBS="$($MYSQL -u $MUSER -h $MHOST -p$MPASS -Bse 'show databases')"
 for db in $DBS
 do
  FILE=$ABAK1/$db.$NOWD-$NOWT.gz
- $MYSQLDUMP -u $MUSER -h $MHOST -p$MPASS $db | $GZIP -9 > $FILE
+ $MYSQLDUMP -u $MUSER -h $MHOST -p$MPASS $db --single-transaction | $GZIP -9 > $FILE
 done
  
 ### Backup tikifiles ###
 tar -chzvf $ABAK2/00-$RBAK2-$MLABEL.$NOWD-$NOWT.tgz $TIKIFILESABSPATH/* >  $ALOGF2
 
 ### Backup serverfiles ###
+crontab -l > /root/.crontab.txt
 tar --exclude='/root/..' -chzvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /root/.* >  $ALOGF3
 
 ### Send files over ftp ###
-#lftp -u $FTPU,$FTPP -e "mkdir $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
+#lftp -u $FTPU,$FTPP -e "mkdir -p $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
+# If lftp fails complaining about ssl cert cannot be trusted etc, disable it in the command:
+#lftp -u $FTPU,$FTPP -e "set ftp:ssl-allow no; mkdir -p $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
 cd $ABAK1;ls -lh * > $ALOGF1
 # Add a short summary with partial dir sizes and append all partial log files into one ($LOGF)
 cd $BBAK;du -h $RBAK1 $RBAK2 $RBAK3 > $ALOGF;echo "" >> $ALOGF;echo "--- $RBAK2 uncompressed: ---------------" >> $ALOGF;du $TIKIFILESABSPATH -h --max-depth=2 >> $ALOGF
 
 ### Compress and Send log files ###
 tar -czvf $ALOGF1.tgz -C $BLOGF $RLOGF1
-#tar -czvf $ALOGF2.tgz -C $BLOGF $RLOGF2
+tar -czvf $ALOGF2.tgz -C $BLOGF $RLOGF2
 tar -czvf $ALOGF3.tgz -C $BLOGF $RLOGF3
 #lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; quit" $FTPS
 
 ### Send report through email ###
-sendemail -f $EMAILF -t $EMAILT -u '[B52 14.04 webs Backups Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
+sendemail -f $EMAILF -t $EMAILT -u '[MyServer webs Backups Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
 
 
