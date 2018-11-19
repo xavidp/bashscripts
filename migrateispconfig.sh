@@ -201,9 +201,9 @@ function beenden {
         exit
 }
 menu
-while [ $eingabe != "0" ]
+while [ "$eingabe" != "0" ]
 do
-case $eingabe in
+case "$eingabe" in
     0) beenden
     ;;
     1) install
