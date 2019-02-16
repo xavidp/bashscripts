@@ -3,16 +3,16 @@
 ### PARAMETERS TO CUSTOMIZE THE SCRIPT
 #######################################
 ### Generic Label for the server ###
-MLABEL="bbb.uebvhir.org"
+MLABEL="bbb.example.org"
 ### FTP SERVER Login info ###
 FTPU="ftpuser"
 FTPP="ftppass"
 FTPS="ftpserver"
-FTPF="./backups/bbb.uebvhir.org"
+FTPF="./backups/bbb.example.org"
 NOWD=$(date +"%Y-%m-%d")
 NOWT=$(date +"%H_%M_%S")
 ## Some paths defined
-BAKPATH="/home/ueb" 
+BAKPATH="/home/exampleuser" 
 BAK="backups"
 ## For BBB, you could record ALL folders 
 BBBFILESABSPATH1="/var/bigbluebutton/"
@@ -26,8 +26,8 @@ BBBLOGSABSPATH="/var/log/bigbluebutton/"
 # Relative paths to backup folders
 RBAK3="serverfiles"
 RBAK4="bbb"
-EMAILF="ueb@vhir.org"
-EMAILT="xavier.depedro@vhir.org"
+EMAILF="exampleuser1@example.org"
+EMAILT="exampleuser2@example.org"
 SMTP="localhost"
 
 #### End of parameters
@@ -56,11 +56,11 @@ ALOGF4=$BLOGF/$RLOGF4
 ### These next parts (1) & (2) are related to the removal of previous files in these folders if they exist, and create dirs as needed for new set of periodic backups ###
 
 ## (1) To remove all previous backups locally at the server and at the same base backup folder, uncomment the following line
-#[ ! -d $BAKPATH/$BAK ] && mkdir -p $BAKPATH/$BAK || /bin/rm -f $BAKPATH/$BAK/*
+[ ! -d $BAKPATH/$BAK ] && mkdir -p $BAKPATH/$BAK || /bin/rm -rf $BAKPATH/$BAK/*
 
-## (2) To avoid removing previous backups from the same day locally, keep the last part commeted out (with ## just in front of "|| /bin/rm -f ..." )
-[ ! -d $ABAK3 ] && mkdir -p $ABAK3 || /bin/rm -f $ABAK3/*
-[ ! -d $ABAK4 ] && mkdir -p $ABAK4 || /bin/rm -f $ABAK4/*
+## (2) To avoid removing previous backups from the same day locally, keep the last part commeted out (with ## just in front of "|| /bin/rm -rf ..." )
+[ ! -d $ABAK3 ] && mkdir -p $ABAK3 || /bin/rm -rf $ABAK3/*
+[ ! -d $ABAK4 ] && mkdir -p $ABAK4 || /bin/rm -rf $ABAK4/*
 ### [ ! -d "$BAK" ] && mkdir -p "$BAK" ###
 
 ### Backup serverfiles ###
@@ -86,4 +86,4 @@ tar -czvf $ALOGF4.tgz -C $BLOGF $RLOGF4
 lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF4.tgz; quit" $FTPS
 
 ### Send report through email ###
-sendemail -f $EMAILF -t $EMAILT -u '[bbb.uebvhir.org BBB Backup Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF4  -o tls=no
+sendemail -f $EMAILF -t $EMAILT -u '[bbb.example.org BBB Backup Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF4  -o tls=no

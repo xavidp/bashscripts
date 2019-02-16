@@ -58,12 +58,12 @@ ALOGF3=$BLOGF/$RLOGF3
 ### These next parts (1) & (2) are related to the removal of previous files in these folders if they exist, and create dirs as needed for new set of periodic backups ###
 
 ## (1) To remove all previous backups locally at the server and at the same base backup folder, uncomment the following line
-#[ ! -d $BAKPATH/$BAK ] && mkdir -p $BAKPATH/$BAK || /bin/rm -f $BAKPATH/$BAK/*
+#[ ! -d $BAKPATH/$BAK ] && mkdir -p $BAKPATH/$BAK || /bin/rm -rf $BAKPATH/$BAK/*
 
-## (2) To avoid removing previous backups from teh same day locally, keep the last part commeted out (with ## just in front of "|| /bin/rm -f ..." )
-[ ! -d $ABAK1 ] && mkdir -p $ABAK1 || /bin/rm -f $ABAK1/*
-[ ! -d $ABAK2 ] && mkdir -p $ABAK2 || /bin/rm -f $ABAK2/*
-[ ! -d $ABAK3 ] && mkdir -p $ABAK3 || /bin/rm -f $ABAK3/*
+## (2) To avoid removing previous backups from the same day locally, keep the last part commeted out (with ## just in front of "|| /bin/rm -rf ..." )
+[ ! -d $ABAK1 ] && mkdir -p $ABAK1 || /bin/rm -rf $ABAK1/*
+[ ! -d $ABAK2 ] && mkdir -p $ABAK2 || /bin/rm -rf $ABAK2/*
+[ ! -d $ABAK3 ] && mkdir -p $ABAK3 || /bin/rm -rf $ABAK3/*
 ### [ ! -d "$BAK" ] && mkdir -p "$BAK" ###
  
 DBS="$($MYSQL -u $MUSER -h $MHOST -p$MPASS -Bse 'show databases')"
