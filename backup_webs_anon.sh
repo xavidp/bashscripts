@@ -76,14 +76,18 @@ done
 ### Backup tikifiles ###
 tar -chzvf $ABAK2/00-$RBAK2-$MLABEL.$NOWD-$NOWT.tgz $TIKIFILESABSPATH/* >  $ALOGF2
 
+# Keep track of crontab tasks and /etc/fstab by means of saving them to a file on disk
+crontab -l > /home/myuser/scripts/crontab_root.txt
+cat /etc/fstab > /home/myuser/scripts/etc_fstab.txt
+
 ### Backup serverfiles ###
 crontab -l > /root/.crontab.txt
-tar --exclude='/root/..' -chzvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /root/.* >  $ALOGF3
+tar --exclude='/root/..' -chzvf $ABAK3/00-$RBAK3-$MLABEL.$NOWD-$NOWT.tgz /etc/* /root/.* /home/myuser/scripts/* /srv/* /var/log/* >  $ALOGF3
 
 ### Send files over ftp ###
 #lftp -u $FTPU,$FTPP -e "mkdir -p $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
-# If lftp fails complaining about ssl cert cannot be trusted etc, disable it in the command:
-#lftp -u $FTPU,$FTPP -e "set ftp:ssl-allow no; mkdir -p $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
+# If lftp fails complaining about ssl cert cannot be trusted etc, dissalow verifying the certificate in the command:
+#lftp -u $FTPU,$FTPP -e "set ssl:verify-certificate no; mkdir -p $FTPF/$NOWD;cd $FTPF/$NOWD; mput $ABAK1/*.gz; mput $ABAK2/*.tgz; mput $ABAK3/*.tgz; quit" $FTPS > $ALOGF
 cd $ABAK1;ls -lh * > $ALOGF1
 # Add a short summary with partial dir sizes and append all partial log files into one ($LOGF)
 cd $BBAK;du -h $RBAK1 $RBAK2 $RBAK3 > $ALOGF;echo "" >> $ALOGF;echo "--- $RBAK2 uncompressed: ---------------" >> $ALOGF;du $TIKIFILESABSPATH -h --max-depth=2 >> $ALOGF
@@ -92,7 +96,7 @@ cd $BBAK;du -h $RBAK1 $RBAK2 $RBAK3 > $ALOGF;echo "" >> $ALOGF;echo "--- $RBAK2 
 tar -czvf $ALOGF1.tgz -C $BLOGF $RLOGF1
 tar -czvf $ALOGF2.tgz -C $BLOGF $RLOGF2
 tar -czvf $ALOGF3.tgz -C $BLOGF $RLOGF3
-#lftp -u $FTPU,$FTPP -e "cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; quit" $FTPS
+#lftp -u $FTPU,$FTPP -e "set ssl:verify-certificate no;cd $FTPF/$NOWD; put $ALOGF1.tgz; put $ALOGF2.tgz; put $ALOGF3.tgz; quit" $FTPS
 
 ### Send report through email ###
 sendemail -f $EMAILF -t $EMAILT -u '[MyServer webs Backups Report]' -m 'Short report attached' -a $ALOGF -a $ALOGF1 -s $SMTP -o tls=no
